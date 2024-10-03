@@ -1,15 +1,17 @@
-import math
-import random
-import heapdict
+#!/bin/env python
 
+import read_dimacs
+import sys, os
+import math, random
+import heapdict
 import matplotlib.pyplot as plt
 import networkx as nx
-from matplotlib.animation import FuncAnimation
+import copy
 
 ALPHA = 0.3
-N = 5
-LEVEL = 4
-MAX_COLORS = 3
+N = 5           # Número de iterações do algoritmo NRPA
+LEVEL = 4       # Limite de níveis de recursão
+max_colors = 4  # Número de cores a serem usadas na coloração
 
 counter = 0
 graph = nx.Graph()
@@ -26,13 +28,13 @@ class FilaVertices:
         self.fila[v] = prioridade
     
 class State:
-    def __init__(self, n):
-        self.n = n
-        self.color = [None]*n
+    def __init__(self, graph):
+        self.n = graph.number_of_nodes()
+        self.color = [None]*self.n
         self.colored = 0  # número de vértices coloridos
 
     def __str__(self):
-        return str(self.color)
+        return str(str(self.color)+'\n'+ str(self.colored) + '/' + str(self.n)+'\n')
 
     def is_terminal(self) -> bool:
         return self.colored == self.n
@@ -51,7 +53,7 @@ class State:
     def possible_moves(self, vertex):
         cores_invalidas = []
         existe_valida = False
-        for color in range(MAX_COLORS):
+        for color in range(max_colors):
             if self.is_color_valid(vertex, color):
                 existe_valida = True
                 yield (vertex, color)
@@ -78,21 +80,30 @@ class State:
         for u, v in graph.edges():
             if self.color[u] == self.color[v]:
                 conflicts += 1
-        colors_used = len(set(self.color)) - 1
+        s = set(self.color)
+        colors_used = len(s)
+        # se score() for aplicado apenas a terminais, não há
+        # necessidade de subtrair 1 para o valor None
+        if None in s:
+            colors -= 1
         return -conflicts - colors_used
 
     def initial_state(self):
         for i in range(self.n):
             self.color[i] = None
         self.colored = 0
-            
-def code(move: tuple[int, int]) -> int:
-    return move[0] * MAX_COLORS + move[1]
 
-def playout(state: State, policy: list[float]) -> tuple[int, list[tuple[int, int]]]:
+def terminal_sequence(sequence):
+    return len(sequence) == graph.number_of_nodes()
+
+def code(move: tuple[int, int]) -> int:
+    return move[0] * max_colors + move[1]
+
+def playout(state: State, policy: list[float], graph) -> tuple[int, list[tuple[int, int]]]:
     fila_vertices = FilaVertices(graph)
     sequence = []
-    while not state.is_terminal():
+
+    while not terminal_sequence(sequence):
         vertex = fila_vertices.pop()
         z = 0.0
         # Calcula a soma exponencial dos pesos da política para normalização
@@ -116,22 +127,24 @@ def playout(state: State, policy: list[float]) -> tuple[int, list[tuple[int, int
 
     return state.score1(), sequence
 
-def nrpa(state: State, level: int, policy: list[float]) -> tuple[int, list[tuple[int, int]]]:
+def nrpa(state: State, level: int, policy: list[float], graph) -> tuple[int, list[tuple[int, int]]]:
     global counter
     counter += 1
-    
+
+    # print(state)
+
     if level == 0:
         state.initial_state()
-        return playout(state, policy)
+        return playout(state, policy, graph)
 
     best_score = float('-inf')
     best_sequence = []
 
     for _ in range(N):
-        result, new_sequence = nrpa(state, level - 1, policy.copy())
+        result, new_sequence = nrpa(state, level - 1, policy.copy(), graph)
         if result > best_score:
-            cores_usadas = len(set([move[1] for move in new_sequence]))
-            print(f"Nova pontuação recorde de nível {level}: {result}\tCores usadas: {cores_usadas}")
+            # cores_usadas = len(set([move[1] for move in new_sequence]))
+            # print(f"Nova pontuação recorde de nível {level}: {result}\tCores usadas: {cores_usadas}")
 
             best_score = result
             best_sequence = new_sequence
@@ -159,29 +172,53 @@ def adapt(state: State, policy: list[float], sequence: list[tuple[int, int]]) ->
 
 # teste se uma coloração é válida
 # usado para validação da coloração encontrada e depuração
-def valid_coloring(state):
+def valid_coloring(state, graph):
     for u, v in graph.edges():
         if state.color[u] == state.color[v]:
+            print(f'Vertices adjacentes {u} (original {(u+1)}) e {v} ({(v+1)}) receberam as cores {state.color[u]} e {state.color[v]}.')
             return False
     return True
 
-graph.add_edges_from([(0, 1), (0, 2), (1, 2), (1, 3), (2, 4), (3, 5), (3, 4), (4, 6), (4, 5), (5, 6)])
+def valid_sequence(sequence, graph):
+    state = State(graph)
+    for move in sequence:
+        state.play(move)
+    return valid_coloring(state, graph)
 
-state = State(graph.number_of_nodes())
-politica = [0] * graph.number_of_nodes() * MAX_COLORS
+def main():
+    global graph, max_colors
+    nparam = len(sys.argv)
+    if nparam == 3:
+        fname = sys.argv[1]
+        max_colors = int(sys.argv[2])
+    else:
+        script_name = os.path.basename(__file__)
+        print(f"usage: {script_name} <DIMACS graph filename> <number-of-colors>")
+        exit(1)
 
-melhor_score, melhor_sequencia = nrpa(state, LEVEL, politica)
+    graph = read_dimacs.read_graph(fname)
+    print(f"Nodes: {graph.number_of_nodes()}, edges: {graph.number_of_edges()}\n")
+    
+    #graph = nx.Graph()
+    #graph.add_edges_from([(0, 1), (0, 2), (1, 2), (1, 3), (2, 4), (3, 5), (3, 4), (4, 6), (4, 5), (5, 6)])
+    
+    state = State(graph)
+    politica = [0] * graph.number_of_nodes() * max_colors
 
-cores = [move[1] for move in melhor_sequencia]
+    melhor_score, melhor_sequencia = nrpa(state, LEVEL, politica, graph)
 
+    cores = [move[1] for move in melhor_sequencia]
 
-if valid_coloring(state):
-    print("\nColoração válida.")
-else:
-    print(f'\nColoração não válida.')
+    if valid_sequence(melhor_sequencia, graph):
+        print("Coloração válida.")
+    else:
+        print(f'Coloração não válida.')
 
-print(f"Cores usadas: {len(set(cores))}")
-print(f"Numero de vezes que nrpa foi executada: {counter}")
-print(f"Melhor pontuação: {melhor_score}")
-print(f"Melhor sequência: {melhor_sequencia}")
+    print(f"Cores usadas: {len(set(cores))}")
+    print(f"Numero de vezes que nrpa foi executada: {counter}")
+    print(f"Melhor pontuação: {melhor_score}")
+    melhor_sequencia.sort()
+    print(f"Melhor sequência: {melhor_sequencia}")
 
+if __name__ == "__main__":
+    main()
