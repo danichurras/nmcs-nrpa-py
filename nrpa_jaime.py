@@ -175,7 +175,6 @@ def adapt(state: State, policy: list[float], sequence: list[tuple[int, int]]) ->
 def valid_coloring(state, graph):
     for u, v in graph.edges():
         if state.color[u] == state.color[v]:
-            print(f'Vertices adjacentes {u} (original {(u+1)}) e {v} ({(v+1)}) receberam as cores {state.color[u]} e {state.color[v]}.')
             return False
     return True
 
@@ -188,37 +187,36 @@ def valid_sequence(sequence, graph):
 def main():
     global graph, max_colors
     nparam = len(sys.argv)
-    if nparam == 3:
+    if nparam >= 3:
         fname = sys.argv[1]
         max_colors = int(sys.argv[2])
     else:
         script_name = os.path.basename(__file__)
-        print(f"usage: {script_name} <DIMACS graph filename> <number-of-colors>")
+        print(f"usage: {script_name} <DIMACS graph filename> <number-of-colors> [verbose]")
         exit(1)
 
     graph = read_dimacs.read_graph(fname)
-    print(f"Nodes: {graph.number_of_nodes()}, edges: {graph.number_of_edges()}\n")
-    
-    #graph = nx.Graph()
-    #graph.add_edges_from([(0, 1), (0, 2), (1, 2), (1, 3), (2, 4), (3, 5), (3, 4), (4, 6), (4, 5), (5, 6)])
+
     
     state = State(graph)
     politica = [0] * graph.number_of_nodes() * max_colors
 
     melhor_score, melhor_sequencia = nrpa(state, LEVEL, politica, graph)
 
-    cores = [move[1] for move in melhor_sequencia]
-
+    # resposta curta para os experimentos
     if valid_sequence(melhor_sequencia, graph):
-        print("Coloração válida.")
+        print("SIM")
     else:
-        print(f'Coloração não válida.')
+        print("NÃO")
 
-    print(f"Cores usadas: {len(set(cores))}")
-    print(f"Numero de vezes que nrpa foi executada: {counter}")
-    print(f"Melhor pontuação: {melhor_score}")
-    melhor_sequencia.sort()
-    print(f"Melhor sequência: {melhor_sequencia}")
-
+    # resposta longa (verbose)
+    if (nparam >= 4 and sys.argv[3] == 'verbose'):
+        print(f"Nodes: {graph.number_of_nodes()}, edges: {graph.number_of_edges()}\n")
+        cores = [move[1] for move in melhor_sequencia]
+        print(f"Cores usadas: {len(set(cores))}")
+        print(f"Numero de vezes que nrpa foi executada: {counter}")
+        print(f"Melhor pontuação: {melhor_score}")
+        melhor_sequencia.sort()
+        print(f"Melhor sequência: {melhor_sequencia}")
 if __name__ == "__main__":
     main()
