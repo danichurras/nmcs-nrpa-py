@@ -10,8 +10,8 @@ import logging
 
 ALPHA = 0.3
 N = 5           # Número de iterações do algoritmo NRPA
-LEVEL = 5       # Limite de níveis de recursão
 max_colors = 4  # Número de cores a serem usadas na coloração
+time_expired = False
 
 counter = 0
 graph = nx.Graph()
@@ -30,7 +30,9 @@ class TimeoutException(Exception):
 
 # Handler function to raise the timeout exception
 def timeout_handler(signum, frame):
-    raise TimeoutException("Execution time limit exceeded.")
+    global time_expired
+    time_expired = True
+    #raise TimeoutException("Execution time limit exceeded.")
 
 
 # fila de prioridade de vértices
@@ -144,36 +146,26 @@ def playout(state: State, policy: list[float], graph) -> tuple[int, list[tuple[i
 
     return state.score1(), sequence
 
-def nrpa(state: State, level, policy, graph):
-    global counter
+def nrpa(state: State, policy, graph):
+    global counter, time_expired
     counter += 1
-    time_expired = False
     
-    if level == 0:
-        state.initial_state()
-        score, sequence = playout(state, policy, graph)
-        return score, sequence, time_expired
-
     best_score = float('-inf')
     best_sequence = []
 
-    try:
-        for _ in range(N):
-            score, new_sequence, time_time_expired = nrpa(state, level - 1, policy.copy(), graph)
-            if score > best_score:
-                best_score = score
-                best_sequence = new_sequence
-                if score == 0:
-                    # encontrou uma coloração valida
-                    return best_score, best_sequence, time_expired
-            # Adapta a política com base na melhor sequência encontrada
+    while True:
+        state.initial_state()
+        score, new_sequence = playout(state, policy, graph)
+
+        if score > best_score:
+            best_score = score
+            best_sequence = new_sequence
+            if score == 0: # encontrou uma coloração valida
+                break
             policy = adapt(state, policy, best_sequence)
-    except TimeoutException as e:
-        logging.error(str(e))
-        time_expired = True
-    finally:
-        signal.alarm(0) # disable the alarm
-        
+        if time_expired:
+            break
+    signal.alarm(0)        
     return best_score, best_sequence, time_expired
 
 def adapt(state: State, policy: list[float], sequence: list[tuple[int, int]]) -> list[float]:
@@ -209,12 +201,13 @@ def valid_sequence(sequence, graph):
 def main():
     global graph, max_colors
     nparam = len(sys.argv)
-    if nparam >= 3:
+    if nparam >= 4:
         fname = sys.argv[1]
         max_colors = int(sys.argv[2])
+        time_limit = int(sys.argv[3]) # tempo em segundos
     else:
         script_name = os.path.basename(__file__)
-        print(f"usage: {script_name} <DIMACS graph filename> <number-of-colors> [verbose]", file=sys.stderr)
+        print(f"usage: {script_name} <DIMACS graph filename> <number-of-colors> <tempo_de_execução> [verbose]", file=sys.stderr)
         exit(1)
 
     try:
@@ -225,14 +218,12 @@ def main():
     state = State(graph)
     politica = [0] * graph.number_of_nodes() * max_colors
 
-    time_limit =  15*60 # 15 minutos de limite
-
     signal.signal(signal.SIGALRM, timeout_handler) 
     if time_limit:
         signal.alarm(time_limit)
         
     start_time = time.time()
-    score, sequencia, time_expired = nrpa(state, LEVEL, politica, graph)
+    score, sequencia, time_expired = nrpa(state, politica, graph)
     execution_time = time.time() - start_time 
     
     n = graph.number_of_nodes()

@@ -1,0 +1,75 @@
+Repetições: 5
+Tempo limite por repetição: 15 minutos
+
+Running with the chromatic number plus 1:
+
+4-Insertions_3.col        5    79     156    0      yes .                   0.00
+4-Insertions_3.col        5    79     156    0      yes .                   0.00
+4-Insertions_3.col        5    79     156    0      yes .                   0.03
+4-Insertions_3.col        5    79     156    0      yes .                   0.00
+4-Insertions_3.col        5    79     156    0      yes .                   0.01
+3-FullIns_3.col           7    80     346    0      yes .                   0.27
+3-FullIns_3.col           7    80     346    0      yes .                   0.42
+3-FullIns_3.col           7    80     346    0      yes .                   0.44
+3-FullIns_3.col           7    80     346    0      yes .                   0.79
+3-FullIns_3.col           7    80     346    0      yes .                   1.21
+mug100_25.col             5    100    166    0      yes .                   0.00
+mug100_25.col             5    100    166    0      yes .                   0.00
+mug100_25.col             5    100    166    0      yes .                   0.00
+mug100_25.col             5    100    166    0      yes .                   0.00
+mug100_25.col             5    100    166    0      yes .                   0.00
+1-FullIns_4.col           6    93     593    -2     no  limite de tempo   900.00
+1-FullIns_4.col           6    93     593    -1     no  limite de tempo   900.01
+1-FullIns_4.col           6    93     593    -2     no  limite de tempo   900.01
+1-FullIns_4.col           6    93     593    -2     no  limite de tempo   900.00
+1-FullIns_4.col           6    93     593    -1     no  limite de tempo   900.00
+ash608GPIA.col            5    1216   7844   -105   no  limite de tempo   900.05
+ash608GPIA.col            5    1216   7844   -103   no  limite de tempo   900.06
+le450_15a.col             16   450    8168   -179   no  limite de tempo   900.03
+le450_15a.col             16   450    8168   -180   no  limite de tempo   900.06
+ash608GPIA.col            5    1216   7844   -130   no  limite de tempo   900.05
+le450_15a.col             16   450    8168   -182   no  limite de tempo   900.05
+le450_15a.col             16   450    8168   -173   no  limite de tempo   900.04
+ash608GPIA.col            5    1216   7844   -113   no  limite de tempo   900.01
+ash608GPIA.col            5    1216   7844   -117   no  limite de tempo   900.00
+4-FullIns_3.col           8    114    541    0      yes .                   0.19
+le450_15a.col             16   450    8168   -177   no  limite de tempo   900.04
+4-FullIns_3.col           8    114    541    0      yes .                   0.52
+4-FullIns_3.col           8    114    541    0      yes .                   0.01
+4-FullIns_3.col           8    114    541    0      yes .                   0.44
+4-FullIns_3.col           8    114    541    0      yes .                   1.21
+5-FullIns_3.col           9    154    792    0      yes .                   0.43
+5-FullIns_3.col           9    154    792    0      yes .                   2.79
+5-FullIns_3.col           9    154    792    0      yes .                   3.99
+5-FullIns_3.col           9    154    792    0      yes .                   6.10
+school1_nsh.col           15   352    14612  -737   no  limite de tempo   900.05
+mug100_1.col              5    100    166    0      yes .                   0.00
+mug100_1.col              5    100    166    0      yes .                   0.00
+mug100_1.col              5    100    166    0      yes .                   0.00
+mug100_1.col              5    100    166    0      yes .                   0.00
+5-FullIns_3.col           9    154    792    0      yes .                  11.10
+mug100_1.col              5    100    166    0      yes .                   0.00
+2-FullIns_4.col           7    212    1621   -25    no  limite de tempo   900.00
+2-FullIns_4.col           7    212    1621   -23    no  limite de tempo   900.00
+2-FullIns_4.col           7    212    1621   -23    no  limite de tempo   900.01
+school1_nsh.col           15   352    14612  -731   no  limite de tempo   900.02
+school1_nsh.col           15   352    14612  -731   no  limite de tempo   900.04
+school1_nsh.col           15   352    14612  -736   no  limite de tempo   900.04
+school1_nsh.col           15   352    14612  -731   no  limite de tempo   900.00
+2-FullIns_4.col           7    212    1621   -24    no  limite de tempo   900.00
+2-FullIns_4.col           7    212    1621   -23    no  limite de tempo   900.01
+ash958GPIA.col            5    1916   12506  -244   no  limite de tempo   900.04
+ash958GPIA.col            5    1916   12506  -251   no  limite de tempo   900.02
+ash958GPIA.col            5    1916   12506  -238   no  limite de tempo   900.06
+ash958GPIA.col            5    1916   12506  -230   no  limite de tempo   900.03
+ash958GPIA.col            5    1916   12506  -241   no  limite de tempo   900.02
+myciel6.col               8    95     755    -10    no  limite de tempo   900.00
+myciel6.col               8    95     755    -11    no  limite de tempo   900.00
+myciel6.col               8    95     755    -8     no  limite de tempo   900.00
+myciel6.col               8    95     755    -9     no  limite de tempo   900.00
+myciel6.col               8    95     755    -10    no  limite de tempo   900.00
+wap05a.col                51   905    43081  -239   no  limite de tempo   900.07
+wap05a.col                51   905    43081  -239   no  limite de tempo   900.19
+wap05a.col                51   905    43081  -236   no  limite de tempo   900.21
+wap05a.col                51   905    43081  -241   no  limite de tempo   900.05
+wap05a.col                51   905    43081  -232   no  limite de tempo   900.22

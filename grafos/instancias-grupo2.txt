@@ -1,0 +1,14 @@
+grupo_2/DSJC125.5.col 17
+grupo_2/DSJC125.9.col 44
+grupo_2/DSJC250.9.col 72
+grupo_2/DSJR500.1c.col 85
+grupo_2/DSJR500.5.col 122
+grupo_2/flat300_28_0.col 28
+grupo_2/queen10_10.col 11
+grupo_2/queen11_11.col 11
+grupo_2/queen12_12.col 12
+grupo_2/queen13_13.col 13
+grupo_2/queen14_14.col 14
+grupo_2/queen15_15.col 15
+grupo_2/r1000.5.col 234
+grupo_2/r250.5.col 65

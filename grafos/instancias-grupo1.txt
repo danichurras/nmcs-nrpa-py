@@ -1,0 +1,14 @@
+grupo_1/1-FullIns_4.col 5
+grupo_1/3-FullIns_3.col 6
+grupo_1/4-Insertions_3.col 4
+grupo_1/ash608GPIA.col 4
+grupo_1/le450_15a.col 15
+grupo_1/mug100_25.col 4
+grupo_1/school1_nsh.col 14
+grupo_1/2-FullIns_4.col 6
+grupo_1/4-FullIns_3.col 7
+grupo_1/5-FullIns_3.col 8
+grupo_1/ash958GPIA.col 4
+grupo_1/mug100_1.col 4
+grupo_1/myciel6.col 7
+grupo_1/wap05a.col 50

@@ -7,7 +7,10 @@ import networkx as nx
 # assume que os vértices são numerados de 1 a n no arquivo
 # mas internamente nomeia-os com números de 0 a n-1
 def read_graph(fname):
-    f = open(fname, "r")
+    try:
+        f = open(fname, "r")
+    except:
+        raise
     g = nx.Graph()
     for line in f:
         if line[0] == 'c':
