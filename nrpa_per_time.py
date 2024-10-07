@@ -39,8 +39,9 @@ def timeout_handler(signum, frame):
 class FilaVertices:
     def __init__(self, graph):
         self.fila = heapdict.heapdict()
+        n = graph.number_of_nodes()
         for v in graph.nodes:
-            self.fila[v] = graph.degree(v)
+            self.fila[v] = n - graph.degree(v)
     def pop(self):
         return self.fila.popitem()[0]
     def muda_prioridade(self, v, prioridade):
