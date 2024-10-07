@@ -19,6 +19,8 @@ logging.basicConfig(
 def run_simulation(tasks, max_concurrent_tasks):
     global time_limit
 
+    command = "../nrpa_per_time.py"
+    
     running_tasks = [] 
     next_task = 0
 
@@ -26,7 +28,7 @@ def run_simulation(tasks, max_concurrent_tasks):
     while len(running_tasks) < max_concurrent_tasks and next_task < len(tasks):
         filename, number = tasks[next_task]
         try:
-            process = subprocess.Popen(["../nrpa_per_time.py", filename, str(number), str(time_limit)], cwd='../grafos')  
+            process = subprocess.Popen([command, filename, str(number), str(time_limit)], cwd='../grafos')  
         except subprocess.CalledProcessError as e:
             logging.error(f"Error occurred while running simulation for {filename}: {e}")
         running_tasks.append(process)
@@ -41,7 +43,7 @@ def run_simulation(tasks, max_concurrent_tasks):
                 # Start the next task if there are more in the list
                 if next_task < len(tasks):
                     filename, number = tasks[next_task]
-                    process = subprocess.Popen(["../nrpa_per_time.py", filename, str(number), str(time_limit)], cwd='../grafos')  
+                    process = subprocess.Popen([command, filename, str(number), str(time_limit)], cwd='../grafos')  
                     running_tasks.append(process)
                     next_task += 1
         time.sleep(0.1)  # Briefly sleep to avoid busy-waiting
@@ -54,11 +56,6 @@ def main(input_file, repeticoes, max_concurrent_tasks):
     # chromatic number of the graph
     tasks = []
     for delta_k in [1,0]:
-        print("\nRunning with the chromatic number", end="")
-        if delta_k == 1:
-            print(" plus 1:\n", flush=True)
-        else:
-            print(":\n", flush=True)
         try:
             with open(input_file, 'r') as file:
                 for line in file:
@@ -77,8 +74,8 @@ def main(input_file, repeticoes, max_concurrent_tasks):
             logging.error(f'File {input_file} not found in run-testes.py.')
             exit(1)
 
-        # Call the simulation function with the arguments
-        run_simulation(tasks, max_concurrent_tasks)
+    # Call the simulation function with the arguments
+    run_simulation(tasks, max_concurrent_tasks)
         
 if __name__ == "__main__":
     nparam = len(sys.argv)
